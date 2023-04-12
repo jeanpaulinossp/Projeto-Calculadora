@@ -1,11 +1,9 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
   justify-content: center;
   padding: 20px 20px;
-  align-items: flex-start;
   background: #333;
   width: 270px;
   border-radius: 4px;
@@ -18,6 +16,7 @@ export const Operations = styled.span`
 `;
 
 export const Result = styled.span`
+  justify-self: end;
   font-size: 50px;
   color: #fff;
 `;

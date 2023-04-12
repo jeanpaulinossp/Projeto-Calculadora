@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Buttons, Container, Operations, Result } from "./styles";
 import Button from "../Button/Button";
 
@@ -10,7 +10,6 @@ const Screen = () => {
 
   function addDigitCalc(d) {
     if ((d === "+" || d === "-" || d === "*" || d === "/") && operation) {
-      console.log("kkkk");
       setOperation(false);
       setValue(result + d);
       return;
@@ -23,6 +22,44 @@ const Screen = () => {
 
     const valueDigitScreen = value + d;
     setValue(valueDigitScreen);
+  }
+
+  function addDigitCalcTeclado(d) {
+    let tecla = d.key;
+    let valueDigitScreen;
+
+    if (
+      (tecla >= 0 && tecla <= 9) ||
+      tecla === "+" ||
+      tecla === "-" ||
+      tecla === "*" ||
+      tecla === "/"
+    ) {
+      if (
+        (tecla === "+" || tecla === "-" || tecla === "*" || tecla === "/") &&
+        operation
+      ) {
+        setOperation(false);
+        setValue(result + tecla);
+        return;
+      }
+      if (operation) {
+        setValue(tecla);
+        setOperation(false);
+        return;
+      }
+      valueDigitScreen = value + tecla;
+      setValue(valueDigitScreen);
+    }
+    if (tecla === "Enter" || tecla === "=") {
+      operationCalc("=");
+    }
+    if (tecla === "Backspace") {
+      operationCalc("bs");
+    }
+    if (tecla === "Escape") {
+      clearCalc();
+    }
   }
 
   function clearCalc() {
@@ -51,6 +88,14 @@ const Screen = () => {
       setResult("ERRO");
     }
   }
+
+  useEffect(() => {
+    document.addEventListener("keydown", addDigitCalcTeclado);
+
+    return () => {
+      document.removeEventListener("keydown", addDigitCalcTeclado);
+    };
+  }, [operation, value]);
 
   return (
     <Container>
