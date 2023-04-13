@@ -7,6 +7,21 @@ const Screen = () => {
   const [result, setResult] = useState(0);
   const [acc, setAcc] = useState(0);
   const [operation, setOperation] = useState(false);
+  const [test, setTest] = useState(0);
+
+  async function requestApi(expressao) {
+    const res = await fetch(`http://localhost:4000/calc/${expressao}`, {
+      mode: "cors",
+    });
+    const json = await res.json();
+    setTest(json);
+  }
+
+  // VER ERRO
+
+  // useEffect(() => {
+  //   requestApi(value);
+  // }, [operation]);
 
   function addDigitCalc(d) {
     if ((d === "+" || d === "-" || d === "*" || d === "/") && operation) {
@@ -80,7 +95,9 @@ const Screen = () => {
     }
     try {
       // função eval do JS faz o cálculo da operação automaticamente
-      const r = eval(value);
+      // tratar a expressao enviada, quando tiver barra substituir por %2F2
+
+      const r = test;
       setAcc(r);
       setResult(r);
       setOperation(true);
