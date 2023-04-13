@@ -9,6 +9,30 @@ export const Container = styled.div`
   border-radius: 4px;
 `;
 
+export const LogoutStyle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  p {
+    font-size: 1.2rem;
+
+    margin: 0;
+    padding: 5px;
+  }
+
+  button {
+    border-radius: 4px;
+    padding: 5px;
+    width: 50px;
+    background: #000;
+    color: #fff;
+    text-align: center;
+    outline: none;
+    cursor: pointer;
+  }
+`;
+
 export const Operations = styled.span`
   height: 20px;
   font-size: 1.5rem;

@@ -29,30 +29,6 @@ export const LoginStyle = styled.div`
   }
 `;
 
-export const LogoutStyle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  p {
-    font-size: 1.2rem;
-
-    margin: 0;
-    padding: 5px;
-  }
-
-  button {
-    border-radius: 4px;
-    padding: 5px;
-    width: 50px;
-    background: #000;
-    color: #fff;
-    text-align: center;
-    outline: none;
-    cursor: pointer;
-  }
-`;
-
 export const CalculatorStyle = styled.div`
   display: flex;
   flex-direction: column;

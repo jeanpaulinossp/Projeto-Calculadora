@@ -1,23 +1,23 @@
 import { useState } from "react";
 import Screen from "./Screen/Screen";
-import { Container, LoginStyle, CalculatorStyle, LogoutStyle } from "./styles";
+import { Container, LoginStyle, CalculatorStyle } from "./styles";
 import Input from "./Input/Input";
 
 function App() {
   const [value, setValue] = useState("");
   const [name, setName] = useState("");
+  const [time, setTime] = useState("");
   const [login, setLogin] = useState(true);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    setTime({
+      data: new Date().toLocaleDateString(),
+      hora: new Date().toLocaleTimeString(),
+    });
     setName(value);
     setLogin(false);
     setValue("");
-  }
-
-  function Logout() {
-    setName("");
-    setLogin(true);
   }
 
   return (
@@ -39,14 +39,15 @@ function App() {
 
       {name.length > 0 && (
         <>
-          <LogoutStyle>
-            <p>{name && ` Seja bem vindo(a) ${name}.`}</p>
-            <button onClick={Logout}>Sair</button>
-          </LogoutStyle>
           <CalculatorStyle>
             <p>Calculadora</p>
             <div className="CalcContas">
-              <Screen />
+              <Screen
+                name={name}
+                hora={time}
+                setName={setName}
+                setLogin={setLogin}
+              />
               <div className="Results">Contas</div>
             </div>
           </CalculatorStyle>

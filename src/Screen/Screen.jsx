@@ -1,27 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Buttons, Container, Operations, Result } from "./styles";
+import { LogoutStyle, Buttons, Container, Operations, Result } from "./styles";
 import Button from "../Button/Button";
+import { USER_POST } from "../api/config";
 
-const Screen = () => {
+const Screen = ({ name, hora, setName, setLogin }) => {
   const [value, setValue] = useState("");
   const [result, setResult] = useState(0);
   const [acc, setAcc] = useState(0);
   const [operation, setOperation] = useState(false);
-  const [test, setTest] = useState(0);
-
-  async function requestApi(expressao) {
-    const res = await fetch(`http://localhost:4000/calc/${expressao}`, {
-      mode: "cors",
-    });
-    const json = await res.json();
-    setTest(json);
-  }
-
-  // VER ERRO
-
-  // useEffect(() => {
-  //   requestApi(value);
-  // }, [operation]);
+  const [contas, setContas] = useState([]);
 
   function addDigitCalc(d) {
     if ((d === "+" || d === "-" || d === "*" || d === "/") && operation) {
@@ -48,7 +35,10 @@ const Screen = () => {
       tecla === "+" ||
       tecla === "-" ||
       tecla === "*" ||
-      tecla === "/"
+      tecla === "/" ||
+      tecla === "," ||
+      tecla === "(" ||
+      tecla === ")"
     ) {
       if (
         (tecla === "+" || tecla === "-" || tecla === "*" || tecla === "/") &&
@@ -85,7 +75,7 @@ const Screen = () => {
     return;
   }
 
-  function operationCalc(op) {
+  async function operationCalc(op) {
     if (op === "bs") {
       let valueScreen = value;
       valueScreen = valueScreen.substring(0, valueScreen.length - 1);
@@ -94,16 +84,43 @@ const Screen = () => {
       return;
     }
     try {
-      // função eval do JS faz o cálculo da operação automaticamente
-      // tratar a expressao enviada, quando tiver barra substituir por %2F2
+      // tratar a expressao enviada, quando tiver barra substituir por %2F
+      const newValue = value.replace("/", "%2F").replace(",", ".");
+      await requestApi(newValue);
 
-      const r = test;
-      setAcc(r);
-      setResult(r);
       setOperation(true);
     } catch {
       setResult("ERRO");
     }
+  }
+
+  async function requestApi(expressao) {
+    const res = await fetch(`http://localhost:4000/calc/${expressao}`);
+    const text = await res.text();
+    setAcc(text);
+    setResult(text);
+    const newExpressao = value.replace("%2F", "/").replace(".", ",");
+    setContas((item) => [...item, `${newExpressao} = ${text};`]);
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const newData = {
+      name,
+      hora,
+      contas,
+    };
+    dataApi(newData);
+    setName("");
+    setLogin(true);
+    setContas([]);
+  }
+
+  async function dataApi(data) {
+    const { url, options } = USER_POST(data);
+    const res = await fetch(url, options);
+    const json = await res.json();
+    console.log(json);
   }
 
   useEffect(() => {
@@ -115,32 +132,40 @@ const Screen = () => {
   }, [operation, value]);
 
   return (
-    <Container>
-      <Operations>{value}</Operations>
-      <Result>{result}</Result>
-      <Buttons>
-        <Button onClick={clearCalc} label={"AC"} />
-        <Button onClick={() => addDigitCalc("(")} label={"("} />
-        <Button onClick={() => addDigitCalc(")")} label={")"} />
-        <Button onClick={() => addDigitCalc("/")} label={"/"} />
-        <Button onClick={() => addDigitCalc("7")} label={"7"} />
-        <Button onClick={() => addDigitCalc("8")} label={"8"} />
-        <Button onClick={() => addDigitCalc("9")} label={"9"} />
-        <Button onClick={() => addDigitCalc("*")} label={"*"} />
-        <Button onClick={() => addDigitCalc("4")} label={"4"} />
-        <Button onClick={() => addDigitCalc("5")} label={"5"} />
-        <Button onClick={() => addDigitCalc("6")} label={"6"} />
-        <Button onClick={() => addDigitCalc("-")} label={"-"} />
-        <Button onClick={() => addDigitCalc("1")} label={"1"} />
-        <Button onClick={() => addDigitCalc("2")} label={"2"} />
-        <Button onClick={() => addDigitCalc("3")} label={"3"} />
-        <Button onClick={() => addDigitCalc("+")} label={"+"} />
-        <Button onClick={() => addDigitCalc("0")} label={"0"} />
-        <Button onClick={() => addDigitCalc(".")} label={"."} />
-        <Button onClick={() => operationCalc("bs")} label={"BS"} />
-        <Button onClick={() => operationCalc("=")} label={"="} />
-      </Buttons>
-    </Container>
+    <>
+      <LogoutStyle>
+        <form onSubmit={handleSubmit}>
+          <p>{name && ` Seja bem vindo(a) ${name}.`}</p>
+          <button type="submit">Sair</button>
+        </form>
+      </LogoutStyle>
+      <Container>
+        <Operations>{value}</Operations>
+        <Result>{result}</Result>
+        <Buttons>
+          <Button onClick={clearCalc} label={"AC"} />
+          <Button onClick={() => addDigitCalc("(")} label={"("} />
+          <Button onClick={() => addDigitCalc(")")} label={")"} />
+          <Button onClick={() => addDigitCalc("/")} label={"/"} />
+          <Button onClick={() => addDigitCalc("7")} label={"7"} />
+          <Button onClick={() => addDigitCalc("8")} label={"8"} />
+          <Button onClick={() => addDigitCalc("9")} label={"9"} />
+          <Button onClick={() => addDigitCalc("*")} label={"*"} />
+          <Button onClick={() => addDigitCalc("4")} label={"4"} />
+          <Button onClick={() => addDigitCalc("5")} label={"5"} />
+          <Button onClick={() => addDigitCalc("6")} label={"6"} />
+          <Button onClick={() => addDigitCalc("-")} label={"-"} />
+          <Button onClick={() => addDigitCalc("1")} label={"1"} />
+          <Button onClick={() => addDigitCalc("2")} label={"2"} />
+          <Button onClick={() => addDigitCalc("3")} label={"3"} />
+          <Button onClick={() => addDigitCalc("+")} label={"+"} />
+          <Button onClick={() => addDigitCalc("0")} label={"0"} />
+          <Button onClick={() => addDigitCalc(",")} label={","} />
+          <Button onClick={() => operationCalc("bs")} label={"BS"} />
+          <Button onClick={() => operationCalc("=")} label={"="} />
+        </Buttons>
+      </Container>
+    </>
   );
 };
 
