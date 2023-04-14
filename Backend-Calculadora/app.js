@@ -10,13 +10,30 @@ app.use(express.json());
 app.get("/calc/:expressao", function (req, res) {
   var num = eval(req.params.expressao);
   var sum = num.toString();
-  console.log(sum);
   res.send(sum);
 });
 
-app.post("/user", function (req, res) {
-  console.log(req.body);
-  res.status(201).send(req.body);
+app.get("/dadosbd", async function (req, res) {
+  try {
+    let conn = await pool.getConnection();
+    let resBD = await conn.query("SELECT * FROM user");
+    console.log("Dados buscados com Sucesso!");
+    res.send(resBD);
+  } catch (err) {
+    console.log("Erro ao buscar dados!");
+    res.send("Erro ao buscar dados!");
+  }
+});
+
+app.post("/user", async function (req, res) {
+  try {
+    const { name, tempo, contas } = req.body;
+    const { data, hora } = tempo;
+    await main(name, data, hora, contas);
+    res.status(201).send(req.body);
+  } catch (err) {
+    res.send("Os dados digitados estão incorretos");
+  }
 });
 
 const pool = mariadb.createPool({
@@ -26,17 +43,19 @@ const pool = mariadb.createPool({
   database: "calculadora",
 });
 
-async function main() {
+async function main(name, data, hora, arrContas) {
   try {
     let conn = await pool.getConnection();
-    let rows = await conn.query("INSERT INTO user (nome) VALUES ('Jean')");
-    console.log("Dado Inserido no BD!");
+    if (name) {
+      await conn.query(
+        `INSERT INTO user (nome, data, hora, contas) VALUES ('${name}', '${data}', '${hora}', '${arrContas}')`
+      );
+      console.log("Dado Inserido no BD!");
+    }
   } catch (err) {
     console.log("Erro ao inserir Dado no BD");
   }
 }
-
-main();
 
 app.listen(port, (err) => {
   if (err) {

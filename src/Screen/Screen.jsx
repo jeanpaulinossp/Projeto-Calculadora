@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { LogoutStyle, Buttons, Container, Operations, Result } from "./styles";
+import {
+  Container,
+  LogoutStyle,
+  Buttons,
+  Calc,
+  Operations,
+  Result,
+} from "./styles";
 import Button from "../Button/Button";
 import { USER_POST } from "../api/config";
 
-const Screen = ({ name, hora, setName, setLogin }) => {
+const Screen = ({ name, tempo, setName, setLogin, setHistorico }) => {
   const [value, setValue] = useState("");
   const [result, setResult] = useState(0);
   const [acc, setAcc] = useState(0);
@@ -100,27 +107,28 @@ const Screen = ({ name, hora, setName, setLogin }) => {
     setAcc(text);
     setResult(text);
     const newExpressao = value.replace("%2F", "/").replace(".", ",");
-    setContas((item) => [...item, `${newExpressao} = ${text};`]);
+    setContas((item) => [...item, ` ${newExpressao}=${text} `]);
   }
 
   function handleSubmit(e) {
     e.preventDefault();
     const newData = {
       name,
-      hora,
+      tempo,
       contas,
     };
     dataApi(newData);
     setName("");
     setLogin(true);
     setContas([]);
+    setHistorico(false);
   }
 
   async function dataApi(data) {
     const { url, options } = USER_POST(data);
     const res = await fetch(url, options);
     const json = await res.json();
-    console.log(json);
+    return json;
   }
 
   useEffect(() => {
@@ -132,14 +140,15 @@ const Screen = ({ name, hora, setName, setLogin }) => {
   }, [operation, value]);
 
   return (
-    <>
+    <Container>
       <LogoutStyle>
         <form onSubmit={handleSubmit}>
           <p>{name && ` Seja bem vindo(a) ${name}.`}</p>
           <button type="submit">Sair</button>
         </form>
       </LogoutStyle>
-      <Container>
+      <p className="nameCalc">Calculadora Matemática</p>
+      <Calc>
         <Operations>{value}</Operations>
         <Result>{result}</Result>
         <Buttons>
@@ -164,8 +173,8 @@ const Screen = ({ name, hora, setName, setLogin }) => {
           <Button onClick={() => operationCalc("bs")} label={"BS"} />
           <Button onClick={() => operationCalc("=")} label={"="} />
         </Buttons>
-      </Container>
-    </>
+      </Calc>
+    </Container>
   );
 };
 

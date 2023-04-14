@@ -6,6 +6,17 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+
+  .ButtonHistorico {
+    margin-top: 15px;
+    padding: 10px;
+    background: #bbb;
+    color: #000;
+    border: none;
+    text-align: center;
+    outline: none;
+    cursor: pointer;
+  }
 `;
 
 export const LoginStyle = styled.div`
@@ -26,31 +37,5 @@ export const LoginStyle = styled.div`
     text-align: center;
     outline: none;
     cursor: pointer;
-  }
-`;
-
-export const CalculatorStyle = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  p {
-    font-size: 1.3rem;
-    font-weight: bold;
-    margin: 0;
-    padding: 5px;
-  }
-
-  .CalcContas {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-
-    .Results {
-      border-radius: 4px;
-      background-color: red;
-      overflow: auto;
-    }
   }
 `;

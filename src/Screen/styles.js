@@ -1,12 +1,18 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  display: grid;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding: 20px 20px;
-  background: #333;
-  width: 270px;
-  border-radius: 4px;
+
+  .nameCalc {
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 5px;
+    margin: 0;
+  }
 `;
 
 export const LogoutStyle = styled.div`
@@ -14,11 +20,16 @@ export const LogoutStyle = styled.div`
   align-items: center;
   gap: 10px;
 
-  p {
-    font-size: 1.2rem;
+  form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
 
-    margin: 0;
-    padding: 5px;
+  form p {
+    font-size: 1.2rem;
+    font-weight: bold;
   }
 
   button {
@@ -31,6 +42,15 @@ export const LogoutStyle = styled.div`
     outline: none;
     cursor: pointer;
   }
+`;
+
+export const Calc = styled.div`
+  display: grid;
+  justify-content: center;
+  padding: 20px 20px;
+  background: #333;
+  width: 270px;
+  border-radius: 4px;
 `;
 
 export const Operations = styled.span`
